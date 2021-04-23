@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model  # 1
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Product
 
+#dfdfgfhgfdjgfhj rhydghjhfk
 # PLEASE_NOTE_THIS PART !!!!!!!!!
 # in order to create UserSerializer i used model = get_user_model() by importing 1 from the imports
 # when i used model = User i got an error in the server
