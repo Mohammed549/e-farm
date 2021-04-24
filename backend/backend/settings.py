@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "storages",
     
     "base.apps.BaseConfig",
 ]
@@ -112,10 +113,21 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "eFarm",
+        "USER": "hakxran",
+        "PASSWORD":"123456789",
+        "HOST": "efarm-identifier.cnumw826osd2.us-east-2.rds.amazonaws.com",
+        "PORT": "5432",
     }
 }
+
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.sqlite3",
+#        "NAME": BASE_DIR / "db.sqlite3",
+#    }
+#}
 
 
 # Password validation
@@ -171,3 +183,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = 'AKIA3R6YNNJFGZG5YUKM'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'efarm-bucket'
