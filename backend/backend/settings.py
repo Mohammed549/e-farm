@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-import django_heroku
+import django_on_heroku
 from datetime import timedelta
 from pathlib import Path
 
@@ -196,4 +196,4 @@ AWS_STORAGE_BUCKET_NAME = "efarm-bucket"
 if os.getcwd() == "/app":
     DEBUG = False
 
-django_heroku.settings(locals())
+django_on_heroku.settings(locals())
