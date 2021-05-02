@@ -4,7 +4,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model  # 1
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Product
+from .models import Product, FarmProduct, AnimalProduct
 
 # PLEASE_NOTE_THIS PART !!!!!!!!!
 # in order to create UserSerializer i used model = get_user_model() by importing 1 from the imports
@@ -60,4 +60,16 @@ class UserSerializerWithToken(UserSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        fields = "__all__"
+
+
+class FarmProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FarmProduct
+        fields = "__all__"
+
+
+class AnimalProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnimalProduct
         fields = "__all__"

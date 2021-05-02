@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-%ynnq=dqmu2_)d(6fpju87w1z_m7rps=^-okt-905djn^$-rz%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','efarmers-demo.herokuapp.com']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "efarmers-demo.herokuapp.com"]
 
 
 # Application definition
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "storages",
-    
     "base.apps.BaseConfig",
 ]
 
@@ -79,8 +78,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -119,18 +117,18 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "eFarm",
         "USER": "hakxran",
-        "PASSWORD":"123456789",
+        "PASSWORD": "123456789",
         "HOST": "efarm-identifier.cnumw826osd2.us-east-2.rds.amazonaws.com",
         "PORT": "5432",
     }
 }
 
-#DATABASES = {
+# DATABASES = {
 #    "default": {
 #        "ENGINE": "django.db.backends.sqlite3",
 #        "NAME": BASE_DIR / "db.sqlite3",
 #    }
-#}
+# }
 
 
 # Password validation
@@ -189,10 +187,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AWS_QUERYSTRING_AUTH = False
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = 'AKIA3R6YNNJFGZG5YUKM'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'efarm-bucket'
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_ACCESS_KEY_ID = "AKIA3R6YNNJFGZG5YUKM"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "efarm-bucket"
 
-if os.getcwd() == '/app':
+if os.getcwd() == "/app":
     DEBUG = False
