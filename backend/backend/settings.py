@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-%ynnq=dqmu2_)d(6fpju87w1z_m7rps=^-okt-905djn^$-rz%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "efarmers-demo.herokuapp.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "e-farm-1.herokuapp.com"]
 
 
 # Application definition
@@ -117,7 +117,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "eFarm",
         "USER": "hakxran",
-        "PASSWORD": "123456789",
+        "PASSWORD": os.environ.get("DB_PASS"),
         "HOST": "efarm-identifier.cnumw826osd2.us-east-2.rds.amazonaws.com",
         "PORT": "5432",
     }
@@ -188,8 +188,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-AWS_ACCESS_KEY_ID = "AKIA3R6YNNJFGZG5YUKM"
-AWS_SECRET_ACCESS_KEY = "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"
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "efarm-bucket"
 
 if os.getcwd() == "/app":
