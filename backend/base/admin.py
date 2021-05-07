@@ -3,10 +3,9 @@ from .models import *
 # Register your models here.
 
 admin.site.register(User)
-admin.site.register(Farmer)
+
 admin.site.register(Product)
-admin.site.register(FarmProduct)
-admin.site.register(AnimalProduct)
+
 admin.site.register(Review)
 admin.site.register(Order)
 admin.site.register(OrderItem)

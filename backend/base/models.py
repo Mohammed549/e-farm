@@ -7,14 +7,9 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    isFarmer = models.BooleanField(default=False)
     locationX = models.FloatField(default=0)
     locationY = models.FloatField(default=0)
-
-
-class Farmer(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True, blank=True)
+    isFarmer = models.BooleanField(default=False)
     farmerPicture = models.ImageField(null=True, blank=True, default="/placeholder.png")
     farmPicture = models.ImageField(null=True, blank=True, default="/placeholder.png")
     farmName = models.CharField(max_length=200, null=True, blank=True)
@@ -24,14 +19,13 @@ class Farmer(models.Model):
         max_digits=7, decimal_places=2, null=True, blank=True
     )
     numReviews = models.IntegerField(null=True, blank=True, default=0)
-    locationY = models.FloatField(default=0)
 
 
 class Product(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True, default="/placeholder.png")
+    #image = models.ImageField(null=True, blank=True, default="/placeholder.png")
     description = models.TextField(null=True, blank=True)
     unit = models.CharField(max_length=200, null=True, blank=True)
     countInStock = models.IntegerField(null=True, blank=True, default=0)
@@ -46,23 +40,16 @@ class Product(models.Model):
     numReviews = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     isFarmProduct = models.BooleanField(default=True)
-
+    productType = models.CharField(max_length=100, null=True, blank=True)
+    harvestTime = models.DateTimeField(null=True,blank=True)
+    productType = models.CharField(max_length=100, null=True, blank=True)
+    productionTime = models.DateTimeField(null=True,blank=True)
+    
     def __str__(self):
         return self.name
 
 
-class FarmProduct(models.Model):
-    _id = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    productType = models.CharField(max_length=100, null=True, blank=True)
 
-    harvestTime = models.DateTimeField(auto_now_add=True)
-
-
-class AnimalProduct(models.Model):
-    _id = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    productType = models.CharField(max_length=100, null=True, blank=True)
-
-    productionTime = models.DateTimeField(auto_now_add=True)
 
 
 class Review(models.Model):
