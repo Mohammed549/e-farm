@@ -3,31 +3,20 @@ from base.views import product_views as views
 
 
 urlpatterns = [
+    
     path("", views.getProducts, name="products"),
-    path("farm-products/", views.getFarmProducts, name="products"),
-    path("animal-products/", views.getAnimalProducts, name="products"),
-    path("highest-points/", views.getFilteredProductHighestPoints, name="products"),
-    path("highest-price/", views.getFilteredProductHighestPrice, name="products"),
-    path("lowest-price/", views.getFilteredProductLowestPrice, name="products"),
-    path(
-        "points_4_5_and_higher/",
-        views.getFilteredProductWithPoints4_5AndHigher,
-        name="products",
-    ),
-    path(
-        "points_4/",
-        views.getFilteredProductWithPoints4,
-        name="products",
-    ),
-    path(
-        "points_3_5_and_higher/",
-        views.getFilteredProductWithPoints3_5AndHigher,
-        name="products",
-    ),
-    path(
-        "points_3/",
-        views.getFilteredProductWithPoints3,
-        name="products",
-    ),
+    
+
+    path("create/", views.createProduct, name="product-create"),
+    path("upload/", views.uploadImage, name="image-uplaod"),
+    path("farmers/", views.getFarmerProducts, name="farmer-products"),
+
+    path("<str:pk>/reviews/", views.createProductReview, name="create-review"),
     path("<str:pk>/", views.getProduct, name="product"),
+
+    path("update/<str:pk>/", views.updateProduct, name="product-update"),
+    path("delete/<str:pk>/", views.deleteProduct, name="product-delete"),
+
+    path("update/farmers/<str:pk>/", views.updateFarmersProduct, name="product-farmer-update"),
+    path("update/farmers/<str:pk>/", views.deleteFarmersProduct, name="product-farmer-delete"),
 ]
