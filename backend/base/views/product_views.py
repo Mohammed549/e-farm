@@ -5,10 +5,11 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
+from django.contrib.auth import get_user_model
 from base.models import Product, Review
 from base.serializer import (
-    ProductSerializer
+    ProductSerializer,
+    UserSerializer
    
     
 )
@@ -23,6 +24,17 @@ def getProducts(request):
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
+@api_view(["GET"])
+def getFarmerProducts(request):
+    user = request.user
+    #farmerUser = UserSerializer(user, many=False)
+
+    #products = Product.objects.filter(user_id=user.id)
+    products = user.product_set.all()
+    serializer = ProductSerializer(products, many=True)
+    
+    return Response(serializer.data)
+
 
 @api_view(["GET"])
 def getProduct(request, pk):
@@ -32,28 +44,32 @@ def getProduct(request, pk):
     return Response(serializer.data)
 
 @api_view(['POST'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAdminUser | IsAuthenticated])
 def createProduct(request):
     user = request.user
+    farmerUser = UserSerializer(user, many=False)
+    if user.isFarmer == True:
+        product = Product.objects.create(
+            user=user,
+            name='Sample Name',
+            description='Deneme',
+            unit='Sample Unit',
+            countInStock=0,
+            category='Sample Category',
+            unitPrice=0,
 
-    product = Product.objects.create(
-        user=user,
-        name='Sample Name',
-        description='Deneme',
-        unit='Sample Unit',
-        countInStock=0,
-        category='Sample Category',
-        unitPrice=0,
+            isFarmProduct=True,
+        )
 
-        isFarmProduct=True,
-    )
-
-    serializer = ProductSerializer(product, many=False)
-    return Response(serializer.data)
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data)
+    else:
+        return Response("You are did not complete Farmer informations yet")
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
 def updateProduct(request, pk):
+    
     data = request.data
     product = Product.objects.get(_id=pk)
 
@@ -71,13 +87,51 @@ def updateProduct(request, pk):
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateFarmersProduct(request, pk):
+    user = request.user
+    
+    data = request.data
+    product = Product.objects.get(_id=pk)
+    if user == product.user:
+
+        product.name = data['name']
+        product.description = data['description']
+        product.unit = data['unit']
+        product.countInStock = data['countInStock']
+        product.category = data['category']
+        product.unitPrice = data['unitPrice']
+        product.isFarmProduct = data['isFarmProduct']
+        
+
+        product.save()
+
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data)
+    else:
+        return Response("That's not your product")
+
 @api_view(["DELETE"])
 @permission_classes([IsAdminUser])
 def deleteProduct(request, pk):
     product = Product.objects.get(_id=pk)
     product.delete()
 
-    return Response('Producted Deleted')
+    return Response('Product Deleted')
+
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def deleteFarmersProduct(request, pk):
+    user = request.user
+
+    product = Product.objects.get(_id=pk)
+    if user == product.user:
+        product.delete()
+
+        return Response('Product Deleted')
+    else:
+        return Response('You cant delete another one product')
 
 @api_view(['POST'])
 def uploadImage(request):
@@ -99,7 +153,8 @@ def createProductReview(request, pk):
     data = request.data
 
     # 1 - Review already exists
-    alreadyExists = product.review_set.filter(user=user).exists()
+    #alreadyExists = product.review_set.filter(user=user).exists()
+    alreadyExists = False
     if alreadyExists:
         content = {'detail': 'Product already reviewed'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
@@ -128,11 +183,25 @@ def createProductReview(request, pk):
             total += i.productPoint
 
         product.productPoint = total / len(reviews)
-        product.save()
+        
 
         #4- Go User find all product rating and update farmerPoint
+        pUser= product.user
+        serializer = UserSerializer(pUser, many=False)
+        
+        productUser = get_user_model().objects.get(id=pUser.id)
+        
+        productFarmerPoint = 0
+        productFarmerPoint += productUser.farmerPoint
+        allPoint = productFarmerPoint * productUser.numReviews 
+        productUser.numReviews += 1
+        productUser.farmerPoint = (allPoint + data['productPoint']) / productUser.numReviews
 
-        return Response('Review Added')
+        productUser.save()
+        product.save()
+        
+
+        return Response("Reviewed Succesfully")
 
 
 

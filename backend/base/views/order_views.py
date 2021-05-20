@@ -4,12 +4,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 
 
-from base.models import Product, Order , OrderItem, ShippingAddress
+from base.models import Product, Order , OrderItem, ShippingAddress,Box,BoxDelivery,ShipmentCompany,DirectDelivery
+from django.contrib.auth import get_user_model
 from base.serializer import (
     ProductSerializer,
-    OrderSerializer
+    OrderSerializer,
+    UserSerializer
 )
 
 
@@ -21,6 +24,9 @@ from datetime import datetime
 def addOrderItems(request):
     user = request.user
     data = request.data
+
+    company = ShipmentCompany.objects.get(_id=1)
+    selectedBox = Box.objects.get(_id=1)
 
     orderItems = data['orderItems']
 
@@ -42,6 +48,7 @@ def addOrderItems(request):
             city=data['shippingAddress']['city'],
             postalCode=data['shippingAddress']['postalCode'],
             country=data['shippingAddress']['country'],
+            isBoxDelivery=data['shippingAddress']['isBoxDelivery'],
             
         )
 
@@ -62,6 +69,26 @@ def addOrderItems(request):
             product.countInStock -= item.qty
             product.save()
 
+        #(5)Create Box Delivery or DirectDelivery
+        if data['shippingAddress']['isBoxDelivery'] == True:
+            company = ShipmentCompany.objects.get(_id=1)
+            selectedBox = Box.objects.get(_id=1)
+            boxDelivery = BoxDelivery.objects.create(
+                shippingAddress=shipping,
+                shipmentCompany=Company,
+                user=user,
+                box=selectedBox,
+            )
+            boxDelivery.save()
+
+        else:
+            directDelivery=DirectDelivery.objects.create(
+                shippingAddress=shipping,
+                shipmentCompany=Company,
+            )
+        
+
+
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -74,10 +101,33 @@ def getMyOrders(request):
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getOrders(request):
     orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getFarmersOrders(request):
+    user = request.user
+    farmerUser = UserSerializer(user, many=False)
+    
+    #Order.orderItem_set.all()
+    
+    #Order      where order.id = OrderItem.orderid and orderItem.productId = product.id and product.user = user.userid and user=userıd
+    #orderUsers = get_user_model().objects.get(id=user.id)
+    #orderUsers.
+    
+    #query1= OrderItem.objects.all()
+    
+    #orders = Order.objects.filter(Q(_id_contains=query1) | Q(last_name__contains=query)
+
+    productFilter=user.product_set.all()
+    orderItem= OrderItem.objects.filter()
+    orders = Order.objects.filter(user_id=user.id)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 

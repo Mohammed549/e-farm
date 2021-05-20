@@ -15,9 +15,7 @@ class User(AbstractUser):
     farmName = models.CharField(max_length=200, null=True, blank=True)
     address = models.CharField(max_length=400, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    farmerPoint = models.DecimalField(
-        max_digits=7, decimal_places=2, null=True, blank=True
-    )
+    farmerPoint = models.FloatField(default=0)
     numReviews = models.IntegerField(null=True, blank=True, default=0)
 
 

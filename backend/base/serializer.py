@@ -4,7 +4,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model  # 1
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Product,Order,OrderItem,ShippingAddress
+from .models import Product,Order,OrderItem,ShippingAddress,Review
 
 # PLEASE_NOTE_THIS PART !!!!!!!!!
 # in order to create UserSerializer i used model = get_user_model() by importing 1 from the imports
@@ -107,11 +107,22 @@ class UserSerializerWithToken(UserSerializer):
         return str(token.access_token)
     
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Product
         fields = "__all__"
+
+    def get_reviews(self,obj):
+        reviews = obj.review_set.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
